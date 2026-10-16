@@ -45,7 +45,7 @@ td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space
   <button type="button" class="btn" id="baixar" hidden>Baixar de novo</button>
   <div class="tabela" id="tabela" hidden>
     <table>
-      <thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Horas</th><th>Pasta</th><th>Tipo de serviço</th><th>Descrição</th><th>Solicitante</th></tr></thead>
+      <thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Horas</th><th>Pasta</th><th>Cliente</th><th>Tipo de serviço</th><th>Descrição</th><th>Solicitante</th></tr></thead>
       <tbody id="linhas"></tbody>
     </table>
   </div>
@@ -69,7 +69,7 @@ var MODELO_FT_B64 = 'UEsDBBQAAAAIADVcUF2cmuLRggEAAEIKAAATAAAAW0NvbnRlbnRfVHlwZXN
   function br(s) { var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
   function erro(msg) { statusEl.className = 'status erro'; statusEl.textContent = msg; }
 
-  /* Link: #v1=<base64url do JSON {a, s, u, f:[[aaaa-mm-dd, inicioMin, fimMin, tipo, descricao, pasta, solicitante?], ...]}> */
+  /* Link: #v1=<base64url do JSON {a, s, u, f:[[aaaa-mm-dd, inicioMin, fimMin, tipo, descricao, pasta, solicitante?, cliente?], ...]}> */
   function lerLink() {
     var m = /^#v1=([A-Za-z0-9_-]+)$/.exec(location.hash);
     if (!m) return null;
@@ -109,7 +109,7 @@ var MODELO_FT_B64 = 'UEsDBBQAAAAIADVcUF2cmuLRggEAAEIKAAATAAAAW0NvbnRlbnRfVHlwZXN
       vazia('K' + r, 5) + vazia('L' + r, 5) +
       (g.u ? txt('M' + r, g.u) : vazia('M' + r)) +
       (g.s ? txt('N' + r, g.s, 2) : vazia('N' + r, 2)) +
-      vazia('O' + r, 2) +
+      (f[7] ? txt('O' + r, f[7], 2) : vazia('O' + r, 2)) +
       vazia('P' + r) + (f[6] ? txt('Q' + r, f[6]) : vazia('Q' + r)) +
       txt('R' + r, f[5], 6) +
       (celulaS || txt('S' + r, 'Ficha-Tempo')) +
@@ -141,7 +141,7 @@ var MODELO_FT_B64 = 'UEsDBBQAAAAIADVcUF2cmuLRggEAAEIKAAATAAAAW0NvbnRlbnRfVHlwZXN
     var tb = document.getElementById('linhas');
     d.f.forEach(function (f) {
       var tr = document.createElement('tr');
-      [br(f[0]), hhmm(f[1]), hhmm(f[2]), hhmm(f[2] - f[1]), f[5], f[3], f[4], f[6] || ''].forEach(function (v, i) {
+      [br(f[0]), hhmm(f[1]), hhmm(f[2]), hhmm(f[2] - f[1]), f[5], f[7] || '', f[3], f[4], f[6] || ''].forEach(function (v, i) {
         var td = document.createElement('td'); td.textContent = v; if (i < 4) td.className = 'n'; tr.appendChild(td);
       });
       tb.appendChild(tr);
